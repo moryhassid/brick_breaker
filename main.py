@@ -29,6 +29,18 @@ def is_ball_hitting_the_racket(player_racket, current_ball_position):
     return result
 
 
+def is_ball_near_ground(ball_position_currently):
+    return ball_position_currently.y > HEIGHT_SCREEN - 20 - RADIUS_SIZE
+
+
+def is_ball_hit_the_right_wall(ball_position_currently):
+    return ball_position_currently.x >= WIDTH_SCREEN - RADIUS_SIZE
+
+
+def is_ball_hit_the_left_wall(ball_position_currently):
+    return ball_position_currently.x <= RADIUS_SIZE
+
+
 if __name__ == '__main__':
 
     pygame.init()
@@ -49,6 +61,7 @@ if __name__ == '__main__':
     racket = pygame.Rect(WIDTH_SCREEN / 2, HEIGHT_SCREEN - 20, RACKET_WIDTH, RACKET_HEIGHT)
     ball_position = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
     step_y = 10
+    step_x = -5
 
     while True:
         screen.fill(BACKGROUND_COLOR)
@@ -72,15 +85,23 @@ if __name__ == '__main__':
             print("You have reached the ground")
             ball_position = start_new_game()
 
-        if ball_position.y > HEIGHT_SCREEN - 20 - RADIUS_SIZE:
+        if is_ball_near_ground(ball_position_currently=ball_position):
             if is_ball_hitting_the_racket(player_racket=racket,
                                           current_ball_position=ball_position):
                 # Changing direction of the ball
                 step_y *= -1
                 print('debug')
 
+        if is_ball_hit_the_right_wall(ball_position_currently=ball_position):
+            print('You have hit the right wall')
+            step_x *= -1
+
+        if is_ball_hit_the_left_wall(ball_position_currently=ball_position):
+            print('You have hit the left wall')
+            step_x *= -1
+
         # only for starting
-        ball_position.x += 5  # random.randint(1, 5)
+        ball_position.x += step_x  # random.randint(1, 5)
         ball_position.y += step_y  # random.randint(1, 10)
 
         draw.rect(surface=screen,
