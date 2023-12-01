@@ -14,6 +14,22 @@ NUMBER_OF_BRICKS_IN_ROW = 18
 RADIUS_SIZE = 15
 RACKET_HEIGHT = 10
 RACKET_WIDTH = 80
+STEP_SIZE_OF_RACKET = 10
+CEILING_GAP = 50
+
+
+class Brick:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.visible = True
+
+    def get_brick_edge_in_y_axis(self):
+        return CEILING_GAP + self.y * 25 + BRICK_HEIGHT
+
+    def is_ball_can_hit_the_brick(self, ball_position):
+        if self.get_brick_edge_in_y_axis() + RADIUS_SIZE >= ball_position.y:
+            print(f'The Ball hit the brick (x ={self.x}, y = {self.y})')
 
 
 def start_new_game():
@@ -41,6 +57,31 @@ def is_ball_hit_the_left_wall(ball_position_currently):
     return ball_position_currently.x <= RADIUS_SIZE
 
 
+def is_ball_hit_the_ceiling(ball_position_currently):
+    return ball_position_currently.y <= RADIUS_SIZE
+
+
+# def is_ball_hit_the_brick(ball_position_currently, brick_collection):
+#     for row in range(NUMBER_OF_BRICK_ROWS):
+#         for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
+#             brick_collection[row][number_of_brick]
+#             ball_position_currently.y
+# ball_position_currently.x
+
+
+def prepare_logic_for_all_bricks():
+    bricks = []
+    for row in range(NUMBER_OF_BRICK_ROWS):
+        row_bricks = []
+        for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
+            # (left, top, width, height)
+            current_brick = Brick(x=number_of_brick, y=row)
+            row_bricks.append(current_brick)
+        bricks.append(row_bricks)
+
+    return bricks
+
+
 if __name__ == '__main__':
 
     pygame.init()
@@ -63,20 +104,23 @@ if __name__ == '__main__':
     step_y = 10
     step_x = -5
 
+    bricks_logic = prepare_logic_for_all_bricks()
+
     while True:
         screen.fill(BACKGROUND_COLOR)
         # The following loop create a row of bricks
         for row in range(NUMBER_OF_BRICK_ROWS):
             for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
                 # (left, top, width, height)
-                brick = pygame.Rect(number_of_brick * 60 + 10,
-                                    50 + row * 25,
-                                    BRICK_WIDTH,
-                                    BRICK_HEIGHT)
+                if bricks_logic[row][number_of_brick].visible:
+                    brick = pygame.Rect(number_of_brick * 60 + 10,
+                                        CEILING_GAP + row * 25,
+                                        BRICK_WIDTH,
+                                        BRICK_HEIGHT)
 
-                draw.rect(surface=screen,
-                          color=brick_color,
-                          rect=brick)
+                    draw.rect(surface=screen,
+                              color=brick_color,
+                              rect=brick)
 
         ball = pygame.draw.circle(screen, BALL_COLOR, ball_position, RADIUS_SIZE)
 
@@ -100,6 +144,15 @@ if __name__ == '__main__':
             print('You have hit the left wall')
             step_x *= -1
 
+        for row in range(NUMBER_OF_BRICK_ROWS):
+            for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
+                # (left, top, width, height)
+                bricks_logic[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position)
+
+        if is_ball_hit_the_ceiling(ball_position_currently=ball_position):
+            print('You have hit the left wall')
+            step_y *= -1
+
         # only for starting
         ball_position.x += step_x  # random.randint(1, 5)
         ball_position.y += step_y  # random.randint(1, 10)
@@ -118,10 +171,10 @@ if __name__ == '__main__':
 
         if keys[pygame.K_RIGHT]:
             print('Right was pressed')
-            racket.move_ip(5, 0)
+            racket.move_ip(STEP_SIZE_OF_RACKET, 0)
         elif keys[pygame.K_LEFT]:
             print('Left was pressed')
-            racket.move_ip(-5, 0)
+            racket.move_ip(-STEP_SIZE_OF_RACKET, 0)
 
         pygame.draw.rect(screen, RACKET_COLOR, racket)
 
