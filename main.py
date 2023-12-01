@@ -16,6 +16,7 @@ RACKET_HEIGHT = 10
 RACKET_WIDTH = 80
 STEP_SIZE_OF_RACKET = 10
 CEILING_GAP = 50
+LEFT_SIDE_GAP = 10
 
 
 class Brick:
@@ -24,12 +25,19 @@ class Brick:
         self.y = y
         self.visible = True
 
+    def get_brick_edge_in_x_axis(self):
+        return LEFT_SIDE_GAP + self.x * 60
+
     def get_brick_edge_in_y_axis(self):
         return CEILING_GAP + self.y * 25 + BRICK_HEIGHT
 
     def is_ball_can_hit_the_brick(self, ball_position):
-        if self.get_brick_edge_in_y_axis() + RADIUS_SIZE >= ball_position.y:
+        if (self.get_brick_edge_in_y_axis() + RADIUS_SIZE >= ball_position.y and
+                self.get_brick_edge_in_x_axis() < ball_position.x < self.get_brick_edge_in_x_axis() + BRICK_WIDTH):
             print(f'The Ball hit the brick (x ={self.x}, y = {self.y})')
+            return True
+
+        return False
 
 
 def start_new_game():
@@ -113,7 +121,7 @@ if __name__ == '__main__':
             for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
                 # (left, top, width, height)
                 if bricks_logic[row][number_of_brick].visible:
-                    brick = pygame.Rect(number_of_brick * 60 + 10,
+                    brick = pygame.Rect(LEFT_SIDE_GAP + number_of_brick * 60,
                                         CEILING_GAP + row * 25,
                                         BRICK_WIDTH,
                                         BRICK_HEIGHT)
@@ -147,7 +155,8 @@ if __name__ == '__main__':
         for row in range(NUMBER_OF_BRICK_ROWS):
             for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
                 # (left, top, width, height)
-                bricks_logic[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position)
+                if bricks_logic[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position):
+                    bricks_logic[row][number_of_brick].visible = False
 
         if is_ball_hit_the_ceiling(ball_position_currently=ball_position):
             print('You have hit the left wall')
