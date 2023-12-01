@@ -69,14 +69,6 @@ def is_ball_hit_the_ceiling(ball_position_currently):
     return ball_position_currently.y <= RADIUS_SIZE
 
 
-# def is_ball_hit_the_brick(ball_position_currently, brick_collection):
-#     for row in range(NUMBER_OF_BRICK_ROWS):
-#         for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
-#             brick_collection[row][number_of_brick]
-#             ball_position_currently.y
-# ball_position_currently.x
-
-
 def prepare_logic_for_all_bricks():
     bricks = []
     for row in range(NUMBER_OF_BRICK_ROWS):
