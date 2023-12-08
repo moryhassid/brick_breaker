@@ -18,6 +18,7 @@ RACKET_WIDTH = 100
 STEP_SIZE_OF_RACKET = 10
 CEILING_GAP = 50
 LEFT_SIDE_GAP = 10
+CHANGE_SPEED_EVERY_X_BRICKS = 6
 
 
 class Brick:
@@ -103,10 +104,11 @@ if __name__ == '__main__':
     # Initialization:
     racket = pygame.Rect(WIDTH_SCREEN / 2, HEIGHT_SCREEN - 20, RACKET_WIDTH, RACKET_HEIGHT)
     ball_position = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-    step_y = 10
-    step_x = -5
-
+    ball_speed_y = 10
+    ball_speed_x = -5
+    bricks_down = 0
     bricks_logic = prepare_logic_for_all_bricks()
+    speed_has_changed = False
 
     while True:
         screen.fill(BACKGROUND_COLOR)
@@ -135,32 +137,43 @@ if __name__ == '__main__':
             if is_ball_hitting_the_racket(player_racket=racket,
                                           current_ball_position=ball_position):
                 # Changing direction of the ball
-                step_y *= -1
+                ball_speed_y *= -1
                 print('debug')
 
         if is_ball_hit_the_right_wall(ball_position_currently=ball_position):
             print('You have hit the right wall')
-            step_x *= -1
+            ball_speed_x *= -1
 
         if is_ball_hit_the_left_wall(ball_position_currently=ball_position):
             print('You have hit the left wall')
-            step_x *= -1
+            ball_speed_x *= -1
 
         for row in range(NUMBER_OF_BRICK_ROWS):
             for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
                 # (left, top, width, height)
+                pygame.display.set_caption(f'Number of bricks down: {bricks_down},'
+                                           f' speed has changed: {speed_has_changed}')
                 if (bricks_logic[row][number_of_brick].visible is True and
                         bricks_logic[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position)):
                     bricks_logic[row][number_of_brick].visible = False
-                    step_y *= -1
+                    speed_has_changed = False
+                    if bricks_down % CHANGE_SPEED_EVERY_X_BRICKS == 0:
+                        speed_has_changed = True
+                        if ball_speed_y > 0:
+                            ball_speed_y += 3
+                        else:
+                            ball_speed_y += -3
+
+                    bricks_down += 1
+                    ball_speed_y *= -1
 
         if is_ball_hit_the_ceiling(ball_position_currently=ball_position):
             print('You have hit the left wall')
-            step_y *= -1
+            ball_speed_y *= -1
 
         # only for starting
-        ball_position.x += step_x  # random.randint(1, 5)
-        ball_position.y += step_y  # random.randint(1, 10)
+        ball_position.x += ball_speed_x
+        ball_position.y += ball_speed_y
 
         draw.rect(surface=screen,
                   color=RACKET_COLOR,
