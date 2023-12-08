@@ -11,15 +11,17 @@ BRICK_HEIGHT = 20
 BRICK_WIDTH = 42
 NUMBER_OF_BRICK_ROWS = 4
 NUMBER_OF_BRICKS_IN_ROW = 18
+TOTAL_BRICKS = NUMBER_OF_BRICK_ROWS * NUMBER_OF_BRICKS_IN_ROW
 RADIUS_SIZE = 15
 RACKET_HEIGHT = 10
-RACKET_WIDTH = 80
+RACKET_WIDTH = 100
 STEP_SIZE_OF_RACKET = 10
 CEILING_GAP = 50
 LEFT_SIDE_GAP = 10
 
 
 class Brick:
+    # Constructor
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -147,8 +149,10 @@ if __name__ == '__main__':
         for row in range(NUMBER_OF_BRICK_ROWS):
             for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
                 # (left, top, width, height)
-                if bricks_logic[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position):
+                if (bricks_logic[row][number_of_brick].visible is True and
+                        bricks_logic[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position)):
                     bricks_logic[row][number_of_brick].visible = False
+                    step_y *= -1
 
         if is_ball_hit_the_ceiling(ball_position_currently=ball_position):
             print('You have hit the left wall')
@@ -176,6 +180,9 @@ if __name__ == '__main__':
         elif keys[pygame.K_LEFT]:
             print('Left was pressed')
             racket.move_ip(-STEP_SIZE_OF_RACKET, 0)
+        elif keys[pygame.K_ESCAPE]:
+            print('Mory is closing the game, he has pressed Escape button')
+            exit(0)
 
         pygame.draw.rect(screen, RACKET_COLOR, racket)
 
