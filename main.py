@@ -150,19 +150,15 @@ if __name__ == '__main__':
 
         for row in range(NUMBER_OF_BRICK_ROWS):
             for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
-                # (left, top, width, height)
                 pygame.display.set_caption(f'Number of bricks down: {bricks_down},'
                                            f' speed has changed: {speed_has_changed}')
                 if (bricks_logic[row][number_of_brick].visible is True and
                         bricks_logic[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position)):
                     bricks_logic[row][number_of_brick].visible = False
                     speed_has_changed = False
-                    if bricks_down % CHANGE_SPEED_EVERY_X_BRICKS == 0:
+                    if bricks_down > 0 and bricks_down % CHANGE_SPEED_EVERY_X_BRICKS == 0:
                         speed_has_changed = True
-                        if ball_speed_y > 0:
-                            ball_speed_y += 3
-                        else:
-                            ball_speed_y += -3
+                        ball_speed_y += 3
 
                     bricks_down += 1
                     ball_speed_y *= -1
