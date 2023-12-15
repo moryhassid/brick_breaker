@@ -4,9 +4,6 @@ import pygame
 import math
 import random
 
-# TODO:
-# 3. Gameover - when player breaks all bricks
-
 BACKGROUND_COLOR = (255, 255, 255)
 BALL_COLOR = (139, 170, 173)
 RACKET_COLOR = (0, 0, 0)
@@ -109,7 +106,7 @@ if __name__ == '__main__':
     ball_position = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
     ball_speed_y = 10
     ball_speed_x = -5
-    bricks_down = 0
+    bricks_down_counter = 0
     bricks_logic = prepare_logic_for_all_bricks()
     speed_has_changed = False
 
@@ -157,18 +154,22 @@ if __name__ == '__main__':
 
         for row in range(NUMBER_OF_BRICK_ROWS):
             for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
-                pygame.display.set_caption(f'Number of bricks down: {bricks_down},'
+                pygame.display.set_caption(f'Number of bricks down: {bricks_down_counter},'
                                            f' speed has changed: {speed_has_changed}')
                 if (bricks_logic[row][number_of_brick].visible is True and
                         bricks_logic[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position)):
                     bricks_logic[row][number_of_brick].visible = False
                     speed_has_changed = False
-                    if bricks_down > 0 and bricks_down % CHANGE_SPEED_EVERY_X_BRICKS == 0:
+                    if bricks_down_counter > 0 and bricks_down_counter % CHANGE_SPEED_EVERY_X_BRICKS == 0:
                         speed_has_changed = True
                         ball_speed_y += 3
 
-                    bricks_down += 1
+                    bricks_down_counter += 1
                     ball_speed_y *= -1
+
+        if bricks_down_counter == TOTAL_BRICKS:
+            print('Congrats you have finished the Game!! 😊')
+            exit(0)
 
         if is_ball_hit_the_ceiling(ball_position_currently=ball_position):
             print('You have hit the left wall')
