@@ -4,6 +4,9 @@ import pygame
 import math
 import random
 
+# TODO:
+# 3. Gameover - when player breaks all bricks
+
 BACKGROUND_COLOR = (255, 255, 255)
 BALL_COLOR = (139, 170, 173)
 RACKET_COLOR = (0, 0, 0)
@@ -57,7 +60,7 @@ def is_ball_hitting_the_racket(player_racket, current_ball_position):
 
 
 def is_ball_near_ground(ball_position_currently):
-    return ball_position_currently.y > HEIGHT_SCREEN - 20 - RADIUS_SIZE
+    return ball_position_currently.y >= HEIGHT_SCREEN - RACKET_HEIGHT - RADIUS_SIZE
 
 
 def is_ball_hit_the_right_wall(ball_position_currently):
@@ -139,6 +142,10 @@ if __name__ == '__main__':
                 # Changing direction of the ball
                 ball_speed_y *= -1
                 print('debug')
+            else:
+                print('Game Over')
+                print('Mory is closing the game')
+                exit(0)
 
         if is_ball_hit_the_right_wall(ball_position_currently=ball_position):
             print('You have hit the right wall')
@@ -185,10 +192,14 @@ if __name__ == '__main__':
 
         if keys[pygame.K_RIGHT]:
             print('Right was pressed')
-            racket.move_ip(STEP_SIZE_OF_RACKET, 0)
+            print(f'{racket.x=}')
+            if racket.x < WIDTH_SCREEN - RACKET_WIDTH:
+                racket.move_ip(STEP_SIZE_OF_RACKET, 0)
         elif keys[pygame.K_LEFT]:
             print('Left was pressed')
-            racket.move_ip(-STEP_SIZE_OF_RACKET, 0)
+            print(f'{racket.x=}')
+            if racket.x > 0:
+                racket.move_ip(-STEP_SIZE_OF_RACKET, 0)
         elif keys[pygame.K_ESCAPE]:
             print('Mory is closing the game, he has pressed Escape button')
             exit(0)
