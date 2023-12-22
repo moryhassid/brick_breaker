@@ -86,7 +86,6 @@ def prepare_logic_for_all_bricks():
 
 
 if __name__ == '__main__':
-
     pygame.init()
     clock = pygame.time.Clock()
     # font = pygame.font.Font('fonts/ChrustyRock-ORLA.ttf', 32)
@@ -109,6 +108,8 @@ if __name__ == '__main__':
     bricks_down_counter = 0
     bricks_logic = prepare_logic_for_all_bricks()
     speed_has_changed = False
+
+    counter_ball_reached_the_ground = 0
 
     while True:
         screen.fill(BACKGROUND_COLOR)
@@ -140,9 +141,14 @@ if __name__ == '__main__':
                 ball_speed_y *= -1
                 print('debug')
             else:
-                print('Game Over')
-                print('Mory is closing the game')
-                exit(0)
+                counter_ball_reached_the_ground += 1
+                if counter_ball_reached_the_ground < 3:
+                    ball_position = start_new_game()
+                else:
+                    print('Game Over')
+                    print('Mory is closing the game')
+                    pygame.quit()
+                    exit(0)
 
         if is_ball_hit_the_right_wall(ball_position_currently=ball_position):
             print('You have hit the right wall')
@@ -154,8 +160,11 @@ if __name__ == '__main__':
 
         for row in range(NUMBER_OF_BRICK_ROWS):
             for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
+
                 pygame.display.set_caption(f'Number of bricks down: {bricks_down_counter},'
-                                           f' speed has changed: {speed_has_changed}')
+                                           f' speed has changed: {speed_has_changed}, '
+                                           f'{counter_ball_reached_the_ground}/3 Lives')
+
                 if (bricks_logic[row][number_of_brick].visible is True and
                         bricks_logic[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position)):
                     bricks_logic[row][number_of_brick].visible = False
