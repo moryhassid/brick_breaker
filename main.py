@@ -72,7 +72,7 @@ def is_ball_hit_the_ceiling(ball_position_currently):
     return ball_position_currently.y <= RADIUS_SIZE
 
 
-def prepare_logic_for_all_bricks():
+def init_position_for_all_bricks():
     bricks = []
     for row in range(NUMBER_OF_BRICK_ROWS):
         row_bricks = []
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     ball_speed_y = 10
     ball_speed_x = -5
     bricks_down_counter = 0
-    bricks_logic = prepare_logic_for_all_bricks()
+    bricks = init_position_for_all_bricks()
     speed_has_changed = False
 
     counter_ball_reached_the_ground = 0
@@ -117,7 +117,7 @@ if __name__ == '__main__':
         for row in range(NUMBER_OF_BRICK_ROWS):
             for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
                 # (left, top, width, height)
-                if bricks_logic[row][number_of_brick].visible:
+                if bricks[row][number_of_brick].visible:
                     brick = pygame.Rect(LEFT_SIDE_GAP + number_of_brick * 60,
                                         CEILING_GAP + row * 25,
                                         BRICK_WIDTH,
@@ -165,9 +165,9 @@ if __name__ == '__main__':
                                            f' speed has changed: {speed_has_changed}, '
                                            f'{counter_ball_reached_the_ground}/3 Lives')
 
-                if (bricks_logic[row][number_of_brick].visible is True and
-                        bricks_logic[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position)):
-                    bricks_logic[row][number_of_brick].visible = False
+                if (bricks[row][number_of_brick].visible is True and
+                        bricks[row][number_of_brick].is_ball_can_hit_the_brick(ball_position=ball_position)):
+                    bricks[row][number_of_brick].visible = False
                     speed_has_changed = False
                     if bricks_down_counter > 0 and bricks_down_counter % CHANGE_SPEED_EVERY_X_BRICKS == 0:
                         speed_has_changed = True
