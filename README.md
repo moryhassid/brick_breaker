@@ -13,3 +13,8 @@ First of all we would like to use the function:
 <p align="center">
   <img src="images\illustration_of_bricks.jpg" width="700">
 </p>
+
+
+<p align="center">
+  <img src="images\diagram_1.png" width="700">
+</p>
