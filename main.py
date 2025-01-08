@@ -85,6 +85,22 @@ def init_position_for_all_bricks():
     return bricks
 
 
+def draw_bricks_on_screen():
+    # The following loop create a row of bricks
+    for row in range(NUMBER_OF_BRICK_ROWS):
+        for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
+            # (left, top, width, height)
+            if bricks[row][number_of_brick].visible:
+                brick = pygame.Rect(LEFT_SIDE_GAP + number_of_brick * 60,
+                                    CEILING_GAP + row * 25,
+                                    BRICK_WIDTH,
+                                    BRICK_HEIGHT)
+
+                draw.rect(surface=screen,
+                          color=brick_color,
+                          rect=brick)
+
+
 if __name__ == '__main__':
     pygame.init()
     clock = pygame.time.Clock()
@@ -113,19 +129,8 @@ if __name__ == '__main__':
 
     while True:
         screen.fill(BACKGROUND_COLOR)
-        # The following loop create a row of bricks
-        for row in range(NUMBER_OF_BRICK_ROWS):
-            for number_of_brick in range(NUMBER_OF_BRICKS_IN_ROW):
-                # (left, top, width, height)
-                if bricks[row][number_of_brick].visible:
-                    brick = pygame.Rect(LEFT_SIDE_GAP + number_of_brick * 60,
-                                        CEILING_GAP + row * 25,
-                                        BRICK_WIDTH,
-                                        BRICK_HEIGHT)
 
-                    draw.rect(surface=screen,
-                              color=brick_color,
-                              rect=brick)
+        draw_bricks_on_screen()
 
         ball = pygame.draw.circle(screen, BALL_COLOR, ball_position, RADIUS_SIZE)
 
@@ -146,6 +151,11 @@ if __name__ == '__main__':
                     ball_position = start_new_game()
                 else:
                     print('Game Over')
+                    font = pygame.font.SysFont(None, 55)
+                    game_over_text = font.render('Game Over', True, (255, 0, 0))
+                    screen.blit(game_over_text, (screen.get_width() // 2 - 100, screen.get_height() // 2))
+                    pygame.display.flip()
+                    pygame.time.wait(3000)
                     print('Mory is closing the game')
                     pygame.quit()
                     exit(0)
